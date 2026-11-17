@@ -8,53 +8,6 @@ let officialClassification = [];
 let selectedDriver = 55; // Default: Carlos Sainz
 let currentStints = [];
 let activePreset = 'baseline';
-let activeStrategyScenario = null; // 'ham_no_stop' | 'norris_2stop' | 'sainz_early' | null
-
-function getStrategyStintsForScenario(scenarioName) {
-    const totalLaps = (raceInfo && raceInfo.total_laps) ? raceInfo.total_laps : 62;
-    if (scenarioName === 'ham_no_stop') {
-        return [
-            { stint_number: 1, lap_start: 1, lap_end: 20, compound: 'MEDIUM', start_tyre_age: 0 },
-            { stint_number: 2, lap_start: 21, lap_end: totalLaps, compound: 'HARD', start_tyre_age: 0 }
-        ];
-    } else if (scenarioName === 'norris_2stop') {
-        return [
-            { stint_number: 1, lap_start: 1, lap_end: 20, compound: 'MEDIUM', start_tyre_age: 0 },
-            { stint_number: 2, lap_start: 21, lap_end: 44, compound: 'HARD', start_tyre_age: 0 },
-            { stint_number: 3, lap_start: 45, lap_end: totalLaps, compound: 'SOFT', start_tyre_age: 0 }
-        ];
-    } else if (scenarioName === 'sainz_early') {
-        return [
-            { stint_number: 1, lap_start: 1, lap_end: 15, compound: 'MEDIUM', start_tyre_age: 0 },
-            { stint_number: 2, lap_start: 16, lap_end: totalLaps, compound: 'HARD', start_tyre_age: 0 }
-        ];
-    }
-    return [];
-}
-
-function isScenarioActive(name) {
-    if (activeStrategyScenario === name) return true;
-    if (!currentStints || currentStints.length === 0) return false;
-    if (name === 'ham_no_stop') {
-        return currentStints.length === 2 &&
-               currentStints[0].compound === 'MEDIUM' &&
-               currentStints[0].lap_end === 20 &&
-               currentStints[1].compound === 'HARD';
-    } else if (name === 'norris_2stop') {
-        return currentStints.length === 3 &&
-               currentStints[0].compound === 'MEDIUM' &&
-               currentStints[0].lap_end === 20 &&
-               currentStints[1].compound === 'HARD' &&
-               currentStints[1].lap_end === 44 &&
-               currentStints[2].compound === 'SOFT';
-    } else if (name === 'sainz_early') {
-        return currentStints.length === 2 &&
-               currentStints[0].compound === 'MEDIUM' &&
-               currentStints[0].lap_end === 15 &&
-               currentStints[1].compound === 'HARD';
-    }
-    return false;
-}
 
 // Initialize application on page load with multi-page awareness
 document.addEventListener('DOMContentLoaded', async () => {
@@ -221,7 +174,6 @@ async function handleChatSubmit(event) {
                 }
                 if (directives.custom_stints) {
                     currentStints = directives.custom_stints;
-                    activeStrategyScenario = null;
                     renderStintRows();
                 }
                 if (directives.enable_traffic_model !== undefined && document.getElementById('toggle-traffic-model')) {
@@ -306,22 +258,6 @@ function onDriverChange() {
     localStorage.setItem('f1_selected_driver', selectedDriver);
     updateDriverTeamLabel();
 
-    // Check if any scenario preset is active
-    const activeScenario = activeStrategyScenario ||
-        (isScenarioActive('ham_no_stop') ? 'ham_no_stop' :
-         isScenarioActive('norris_2stop') ? 'norris_2stop' :
-         isScenarioActive('sainz_early') ? 'sainz_early' : null);
-
-    // If a strategy scenario preset is active, keep it active and apply that scenario to the newly selected driver!
-    if (activeScenario) {
-        activeStrategyScenario = activeScenario;
-        currentStints = getStrategyStintsForScenario(activeScenario);
-        renderStintRows();
-        runSimulation();
-        updatePresetButtonStyles();
-        return;
-    }
-
     // If user has set a multi-stop strategy (e.g. 2-stop or 3-stop), preserve that stop count for the new driver
     const prevStintCount = currentStints ? currentStints.length : 2;
     if (prevStintCount > 2) {
@@ -335,7 +271,6 @@ function onDriverChange() {
 }
 
 function setStopCount(count) {
-    activeStrategyScenario = null;
     activePreset = 'custom';
     let pitLaps = [];
     let compounds = [];
@@ -496,7 +431,6 @@ function renderStintRows(cliffAnalysis = null) {
 function onStintCompoundChange(idx, compound) {
     currentStints[idx].compound = compound;
     activePreset = 'custom';
-    activeStrategyScenario = null;
     updatePresetButtonStyles();
     renderStintRows();
     runSimulation();
@@ -509,7 +443,6 @@ function onStintPitLapInput(idx, newLap) {
     if (idx < currentStints.length - 1) {
         currentStints[idx + 1].lap_start = val + 1;
     }
-    activeStrategyScenario = null;
     activePreset = 'custom';
     updatePresetButtonStyles();
 }
@@ -551,7 +484,6 @@ function toggleAIInfoModal() {
 }
 
 function resetDriverStrategy() {
-    activeStrategyScenario = null;
     currentStints = JSON.parse(JSON.stringify(baselineStints[selectedDriver] || []));
     renderStintRows();
     updatePresetButtonStyles();
@@ -559,7 +491,6 @@ function resetDriverStrategy() {
 }
 
 function resetToBaseline(keepML = true) {
-    activeStrategyScenario = null;
     // Preserve active ML Model settings if keepML is true
     const enableTraffic = keepML ? (document.getElementById('toggle-traffic-model')?.checked || false) : false;
     const useNonlinear = keepML ? (document.getElementById('toggle-nonlinear-tyre')?.checked || false) : false;
@@ -599,7 +530,6 @@ function resetToBaseline(keepML = true) {
 
 function loadPreset(name) {
     if (name === 'baseline') {
-        activeStrategyScenario = null;
         resetToBaseline(true);
         return;
     }
@@ -623,36 +553,6 @@ function loadPreset(name) {
         runSimulation();
         return;
     }
-
-    // Toggle off if clicking an already active scenario preset
-    if (activeStrategyScenario === name || isScenarioActive(name)) {
-        activeStrategyScenario = null;
-        currentStints = JSON.parse(JSON.stringify(baselineStints[selectedDriver] || []));
-        renderStintRows();
-        updatePresetButtonStyles();
-        runSimulation();
-        return;
-    }
-
-    // Activating strategy scenario preset
-    activeStrategyScenario = name;
-    if (name === 'ham_no_stop') {
-        selectedDriver = 44;
-    } else if (name === 'norris_2stop') {
-        selectedDriver = 4;
-    } else if (name === 'sainz_early') {
-        selectedDriver = 55;
-    }
-
-    localStorage.setItem('f1_selected_driver', selectedDriver);
-    const dSelect = document.getElementById('driver-select');
-    if (dSelect) dSelect.value = selectedDriver;
-
-    currentStints = getStrategyStintsForScenario(name);
-    updateDriverTeamLabel();
-    renderStintRows();
-    updatePresetButtonStyles();
-    runSimulation();
 }
 
 function updatePresetButtonStyles() {
@@ -672,57 +572,7 @@ function updatePresetButtonStyles() {
         else vscBtn.classList.remove('active');
     }
 
-    // Driver information for dynamic label updates
-    const dObj = officialClassification ? officialClassification.find(x => x.driver_number === selectedDriver) : null;
-    const dCode = dObj ? dObj.code : '';
-
-    // 2. Driver Scenario Presets reflect active scenario (supports any driver)
-    const hamBtn = document.getElementById('btn-preset-ham_no_stop');
-    const isHamActive = isScenarioActive('ham_no_stop');
-    if (hamBtn) {
-        if (isHamActive) hamBtn.classList.add('active');
-        else hamBtn.classList.remove('active');
-    }
-    const labelHam = document.getElementById('label-preset-ham');
-    if (labelHam) {
-        if (isHamActive && selectedDriver !== 44 && selectedDriver !== 63) {
-            labelHam.innerHTML = `🛡️ ${dCode} 1-Stop`;
-        } else {
-            labelHam.innerHTML = `🛡️ Mercedes 1-Stop`;
-        }
-    }
-
-    const norrisBtn = document.getElementById('btn-preset-norris_2stop');
-    const isNorrisActive = isScenarioActive('norris_2stop');
-    if (norrisBtn) {
-        if (isNorrisActive) norrisBtn.classList.add('active');
-        else norrisBtn.classList.remove('active');
-    }
-    const labelNorris = document.getElementById('label-preset-norris');
-    if (labelNorris) {
-        if (isNorrisActive && selectedDriver !== 4) {
-            labelNorris.innerHTML = `⚡ ${dCode} 2-Stop Soft`;
-        } else {
-            labelNorris.innerHTML = `⚡ Norris 2-Stop Soft`;
-        }
-    }
-
-    const sainzBtn = document.getElementById('btn-preset-sainz_early');
-    const isSainzActive = isScenarioActive('sainz_early');
-    if (sainzBtn) {
-        if (isSainzActive) sainzBtn.classList.add('active');
-        else sainzBtn.classList.remove('active');
-    }
-    const labelSainz = document.getElementById('label-preset-sainz');
-    if (labelSainz) {
-        if (isSainzActive && selectedDriver !== 55) {
-            labelSainz.innerHTML = `⏱️ ${dCode} Pit Lap 15`;
-        } else {
-            labelSainz.innerHTML = `⏱️ Sainz Pit Lap 15`;
-        }
-    }
-
-    // 3. Baseline Button is active only when in baseline condition
+    // 2. Baseline Button is active only when in baseline condition
     const baseBtn = document.getElementById('btn-preset-baseline');
     if (baseBtn) {
         const isBaseDriver = selectedDriver === 55;
@@ -731,7 +581,7 @@ function updatePresetButtonStyles() {
             !(document.getElementById('toggle-insert-sc')?.checked) &&
             !(document.getElementById('toggle-insert-vsc')?.checked) &&
             !(document.getElementById('toggle-replace-slow-stop')?.checked);
-        if (isBaseDriver && isBaseStints && noInterventions && !activeStrategyScenario && !isHamActive && !isNorrisActive && !isSainzActive) {
+        if (isBaseDriver && isBaseStints && noInterventions) {
             baseBtn.classList.add('active');
         } else {
             baseBtn.classList.remove('active');
