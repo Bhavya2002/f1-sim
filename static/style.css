@@ -1,0 +1,144 @@
+/* Formula 1 Strategy What-If Simulator Styling */
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #0e1015;
+}
+::-webkit-scrollbar-thumb {
+    background: #2a2f3d;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #383d4e;
+}
+
+/* Preset Buttons */
+.preset-btn {
+    background-color: rgba(22, 25, 34, 0.8);
+    border: 1px solid #2a2f3d;
+    padding: 0.65rem 0.75rem;
+    border-radius: 0.5rem;
+    text-align: left;
+    transition: all 0.2s ease-in-out;
+}
+.preset-btn:hover {
+    background-color: rgba(42, 47, 61, 0.6);
+    border-color: #4a5268;
+    transform: translateY(-1px);
+}
+.preset-btn.active {
+    background-color: rgba(225, 6, 0, 0.15);
+    border-color: #E10600;
+    box-shadow: 0 0 12px rgba(225, 6, 0, 0.25);
+}
+
+/* Stop Count Buttons */
+.stop-btn.active {
+    background-color: #E10600;
+    color: #ffffff;
+    border-color: #E10600;
+}
+
+/* Prompt Chips */
+.prompt-chip {
+    font-size: 11px;
+    background-color: rgba(26, 31, 44, 0.7);
+    border: 1px solid #1D2232;
+    color: #9ca3af;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+}
+.prompt-chip:hover {
+    background-color: rgba(225, 6, 0, 0.15);
+    border-color: #E10600;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* Validation Tab Buttons */
+.val-tab-btn.active {
+    background-color: #E10600;
+    color: #ffffff;
+}
+
+/* Tyre Badges */
+.tyre-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+}
+.tyre-soft {
+    background-color: rgba(232, 0, 45, 0.2);
+    color: #ff334b;
+    border: 1px solid rgba(232, 0, 45, 0.6);
+}
+.tyre-medium {
+    background-color: rgba(255, 204, 0, 0.2);
+    color: #ffd633;
+    border: 1px solid rgba(255, 204, 0, 0.6);
+}
+.tyre-hard {
+    background-color: rgba(240, 240, 240, 0.15);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Table Row Highlights */
+.row-modified {
+    background-color: rgba(245, 158, 11, 0.15) !important;
+    border-left: 3px solid #f59e0b;
+    font-weight: 600;
+}
+.row-winner {
+    background-color: rgba(16, 185, 129, 0.08);
+}
+
+/* Position Delta Badges */
+.delta-gain {
+    color: #10b981;
+    font-weight: bold;
+}
+.delta-loss {
+    color: #f43f5e;
+    font-weight: bold;
+}
+.delta-same {
+    color: #6b7280;
+}
+
+/* Tutorial Spotlight */
+.tour-spotlight {
+    position: relative !important;
+    z-index: 51 !important;
+    box-shadow: 0 0 0 4px #E10600, 0 0 25px rgba(225, 6, 0, 0.5) !important;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+/* AI Chat Suggestion Pills */
+.prompt-pill {
+    background-color: rgba(31, 41, 55, 0.6);
+    border: 1px solid #374151;
+    color: #d1d5db;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.prompt-pill:hover {
+    background-color: rgba(225, 6, 0, 0.15);
+    border-color: #E10600;
+    color: #ffffff;
+}

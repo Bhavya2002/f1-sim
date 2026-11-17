@@ -1,0 +1,57 @@
+{
+  "status": "SUCCESS",
+  "models": {
+    "traffic_overtaking": {
+      "name": "Traffic & Overtake Probability Classifier",
+      "type": "Calibrated Logistic Regression with StandardScaler",
+      "accuracy": 0.98,
+      "roc_auc": 0.999,
+      "features": [
+        "gap_before",
+        "pace_delta",
+        "tyre_age_diff",
+        "compound_adv",
+        "speed_delta",
+        "is_drs"
+      ],
+      "feature_weights": {
+        "gap_before": -1.6494,
+        "pace_delta": 6.6364,
+        "tyre_age_diff": 0.9375,
+        "compound_adv": 0.0818,
+        "speed_delta": 0.2347,
+        "is_drs": -0.3622
+      },
+      "dirty_air_penalty_seconds": 0.75
+    },
+    "nonlinear_tyre": {
+      "name": "Non-Linear Tyre Degradation Cliff Regressor",
+      "type": "HistGradientBoostingRegressor",
+      "mae_seconds": 0.024,
+      "r2_score": 1.0,
+      "cliff_laps": {
+        "SOFT": 18,
+        "MEDIUM": 28,
+        "HARD": 42
+      }
+    },
+    "nlp_intent": {
+      "name": "Natural Language Strategy Intent Parser",
+      "type": "TF-IDF + Calibrated Logistic Regression",
+      "accuracy": 1.0,
+      "total_intents": 10,
+      "intents": [
+        "ANALYTICAL_QA",
+        "CHANGE_COMPOUND",
+        "INSERT_SAFETY_CAR",
+        "INSERT_VSC",
+        "MODIFY_PIT_LAP",
+        "OPTIMIZE_PIT_STOP",
+        "REMOVE_SAFETY_CAR",
+        "REMOVE_VSC",
+        "RESET_BASELINE",
+        "SET_STOP_COUNT"
+      ]
+    }
+  }
+}

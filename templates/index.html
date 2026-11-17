@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+
+{% block title %}Formula 1 Race Strategy Studio{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Top Action Strip: Scenario Presets & Quick Starts -->
+    <section id="quick-presets-section" class="bg-f1card border border-f1border rounded-2xl p-4 shadow-xl flex flex-col md:flex-row items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+            <span class="text-xs uppercase tracking-wider font-bold text-gray-300 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-f1red"></span>
+                Scenario Presets:
+            </span>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+            <button onclick="loadPreset('baseline')" class="preset-btn active flex flex-col items-start py-1.5 px-3 text-left" id="btn-preset-baseline">
+                <span class="font-bold flex items-center gap-1.5">🏁 Actual Race</span>
+                <span class="text-[10px] text-gray-400 font-mono mt-0.5">Recorded Decisions</span>
+            </button>
+            <button onclick="loadPreset('no_sc')" class="preset-btn flex flex-col items-start py-1.5 px-3 text-left" id="btn-preset-no_sc">
+                <span class="font-bold flex items-center gap-1.5">🚫 Remove Full SC</span>
+                <span class="text-[10px] text-amber-400 font-mono font-medium mt-0.5">SC Laps 20–22</span>
+            </button>
+            <button onclick="loadPreset('no_vsc')" class="preset-btn flex flex-col items-start py-1.5 px-3 text-left" id="btn-preset-no_vsc">
+                <span class="font-bold flex items-center gap-1.5">🚫 Remove VSC</span>
+                <span class="text-[10px] text-purple-400 font-mono font-medium mt-0.5">VSC Laps 44–45</span>
+            </button>
+            <button onclick="loadPreset('ham_no_stop')" class="preset-btn flex flex-col items-start py-1.5 px-3 text-left" id="btn-preset-ham_no_stop">
+                <span class="font-bold flex items-center gap-1.5">🛡️ Mercedes 1-Stop</span>
+                <span class="text-[10px] text-gray-400 font-mono mt-0.5">Stay out under VSC</span>
+            </button>
+            <button onclick="loadPreset('norris_2stop')" class="preset-btn flex flex-col items-start py-1.5 px-3 text-left" id="btn-preset-norris_2stop">
+                <span class="font-bold flex items-center gap-1.5">⚡ Norris 2-Stop Soft</span>
+                <span class="text-[10px] text-gray-400 font-mono mt-0.5">Pit on Lap 44 for Softs</span>
+            </button>
+            <button onclick="loadPreset('sainz_early')" class="preset-btn flex flex-col items-start py-1.5 px-3 text-left" id="btn-preset-sainz_early">
+                <span class="font-bold flex items-center gap-1.5">⏱️ Sainz Pit Lap 15</span>
+                <span class="text-[10px] text-gray-400 font-mono mt-0.5">Undercut before SC</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Sleek Natural Language Strategy Command Bar -->
+    <section id="ai-chat-section" class="bg-gradient-to-r from-f1card via-gray-900 to-f1card border border-f1border rounded-2xl p-4 shadow-xl space-y-3 relative overflow-hidden">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                    <span class="px-1.5 py-0.5 rounded bg-f1red text-white text-[10px] font-mono">AI</span>
+                    Natural Language Strategy Command
+                </span>
+                <a href="/ml-lab?model=nlp" class="text-[10px] bg-emerald-950 text-emerald-400 hover:text-emerald-300 border border-emerald-800/60 px-2 py-0.5 rounded-full font-mono hidden sm:inline-flex items-center gap-1 transition" title="Test Local NLP Intent Model in ML Lab">
+                    <span>Local NLP Model Active</span>
+                    <span class="text-[9px]">↗</span>
+                </a>
+            </div>
+            <span class="text-xs text-gray-400 font-mono text-[11px]">Type natural instructions or analytical questions</span>
+        </div>
+
+        <form onsubmit="handleChatSubmit(event)" class="flex gap-2">
+            <div class="relative flex-1">
+                <input type="text" id="ai-chat-input"
+                    placeholder='Type a command (e.g. "make Sainz pit one lap earlier", "what if no safety car?", "switch Norris to 2-stop on Softs")...'
+                    class="w-full bg-gray-950/80 border border-f1border rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-f1red focus:ring-1 focus:ring-f1red transition shadow-inner font-sans">
+            </div>
+            <button type="submit" id="chat-submit-btn" class="px-5 py-2.5 bg-f1red hover:bg-red-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-f1red/20 transition flex items-center gap-1.5 whitespace-nowrap">
+                <span>Send</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+        </form>
+
+        <!-- Prompt Suggestions Chips -->
+        <div class="flex flex-wrap items-center gap-1.5 pt-1">
+            <span class="text-[11px] text-gray-500 mr-1">Suggestions:</span>
+            <button type="button" onclick="fillChatInput('make Sainz pit one lap earlier')" class="prompt-chip">"Make Sainz pit 1 lap earlier"</button>
+            <button type="button" onclick="fillChatInput('what if there was no safety car?')" class="prompt-chip">"What if no safety car?"</button>
+            <button type="button" onclick="fillChatInput('remove virtual safety car')" class="prompt-chip">"Remove VSC"</button>
+            <button type="button" onclick="fillChatInput('switch Norris to a 2-stop strategy with Softs')" class="prompt-chip">"Norris 2-stop on Softs"</button>
+            <button type="button" onclick="fillChatInput('why did Verstappen win when the safety car was removed?')" class="prompt-chip">"Why did Verstappen win without SC?"</button>
+        </div>
+
+        <!-- Assistant Output Card -->
+        <div id="ai-chat-response-box" class="hidden mt-3 p-3.5 bg-gray-950/80 border border-gray-800 rounded-xl text-xs space-y-2 transition-all">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-1.5">
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Strategy Assistant Output
+                </span>
+                <div class="flex items-center gap-2">
+                    <span id="ai-confidence-badge" class="text-[10px] bg-blue-950 text-blue-400 border border-blue-800 px-2 py-0.5 rounded font-mono font-semibold"></span>
+                    <span id="ai-action-badge" class="text-[10px] bg-red-950 text-red-400 border border-red-800 px-2 py-0.5 rounded font-mono font-semibold"></span>
+                </div>
+            </div>
+            <div id="ai-chat-response-text" class="text-gray-200 leading-relaxed font-sans"></div>
+        </div>
+    </section>
+
+    <!-- Two-Column Strategy Studio Grid -->
+    <div id="strategy-studio-section" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- Left Column: Strategy Controls & Interventions (5 cols) -->
+        <div class="lg:col-span-5 space-y-5">
+            <div class="bg-f1card border border-f1border rounded-2xl p-5 shadow-xl space-y-5">
+                <div class="flex items-center justify-between border-b border-f1border pb-3">
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-sm bg-f1red"></span>
+                        Strategy Editor
+                    </h2>
+                    <button onclick="resetDriverStrategy()" class="text-xs text-gray-400 hover:text-white underline font-mono">
+                        Reset Driver
+                    </button>
+                </div>
+
+                <!-- Driver Picker -->
+                <div class="space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                        <label class="font-semibold text-gray-300">Select Driver:</label>
+                        <div class="flex items-center gap-2">
+                            <span id="selected-driver-team" class="text-gray-400 font-mono text-xs">Ferrari • #55</span>
+                            <a id="link-inspect-driver-ml" href="/ml-lab?driver=55" class="text-[10px] text-cyan-400 hover:text-cyan-300 bg-cyan-950/80 hover:bg-cyan-900/80 px-2 py-0.5 rounded border border-cyan-800/80 font-mono flex items-center gap-1 transition" title="Inspect driver in ML Lab">
+                                <span>🔬 ML Lab ↗</span>
+                            </a>
+                        </div>
+                    </div>
+                    <select id="driver-select" onchange="onDriverChange()" class="w-full bg-gray-900 border border-f1border rounded-xl px-3.5 py-2 text-sm font-medium text-white focus:outline-none focus:border-f1red transition">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+
+                <!-- Stop Count Selector -->
+                <div class="space-y-1.5">
+                    <label class="text-xs font-semibold text-gray-300">Strategy Stops:</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" onclick="setStopCount(1)" id="stop-btn-1" class="stop-btn py-2 text-xs font-bold rounded-xl border border-f1border text-gray-300 hover:bg-gray-800 transition">
+                            1-Stop
+                        </button>
+                        <button type="button" onclick="setStopCount(2)" id="stop-btn-2" class="stop-btn py-2 text-xs font-bold rounded-xl border border-f1border text-gray-300 hover:bg-gray-800 transition">
+                            2-Stop
+                        </button>
+                        <button type="button" onclick="setStopCount(3)" id="stop-btn-3" class="stop-btn py-2 text-xs font-bold rounded-xl border border-f1border text-gray-300 hover:bg-gray-800 transition">
+                            3-Stop
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stints Timeline & Compound Customizer -->
+                <div class="space-y-2.5 bg-gray-950/60 p-3.5 rounded-xl border border-gray-800/80">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-gray-300 uppercase tracking-wider">Stint Schedule</span>
+                        <span class="text-[11px] text-gray-400 font-mono" id="stint-count-label">2 Stints</span>
+                    </div>
+                    <div id="stint-rows-container" class="space-y-2.5">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Collapsible Race Interventions & ML Dynamics Panel -->
+                <div id="environment-controls-section" class="border-t border-f1border pt-3 space-y-3">
+                    <button type="button" onclick="toggleInterventionsPanel()" class="w-full flex items-center justify-between text-xs font-bold text-gray-300 hover:text-white uppercase tracking-wider py-1">
+                        <span class="flex items-center gap-2">
+                            <span>⚙️</span>
+                            <span>Race Interventions & Physics</span>
+                        </span>
+                        <span id="interventions-toggle-icon" class="text-gray-400 font-mono">▼</span>
+                    </button>
+
+                    <div id="interventions-panel" class="space-y-3 pt-1">
+                        <!-- ML Model 1: Traffic & Dirty Air Dynamics -->
+                        <div class="bg-gray-900/70 p-3 rounded-xl border border-cyan-900/40 space-y-1">
+                            <label class="flex items-start space-x-2.5 cursor-pointer group">
+                                <input type="checkbox" id="toggle-traffic-model" onchange="onOptionToggle()" class="mt-0.5 w-4 h-4 rounded text-cyan-500 focus:ring-cyan-500 bg-gray-800 border-gray-700">
+                                <div>
+                                    <span class="text-xs font-semibold text-white group-hover:text-cyan-400 transition flex items-center gap-1.5">
+                                        <span>Traffic & Dirty Air Dynamics</span>
+                                        <span class="text-[9px] bg-cyan-950 text-cyan-400 border border-cyan-800 px-1.5 py-0.2 rounded font-mono">ML Model</span>
+                                    </span>
+                                    <p class="text-[11px] text-gray-400 leading-snug">Evaluates trained overtake classifier within 1.0s. Blocks cars with +0.75s dirty air penalty if P(pass) &lt; 0.5.</p>
+                                    <div class="mt-1 flex items-center justify-between text-[10px] font-mono">
+                                        <span class="text-cyan-400/90 font-medium">⚡ Proximity: Gap ≤ 1.2s • Loss: +0.75s</span>
+                                        <a href="/ml-lab?model=traffic" class="text-cyan-400 hover:text-cyan-300 underline flex items-center gap-0.5">ML Lab ↗</a>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- ML Model 2: Non-Linear Tyre Degradation Cliff -->
+                        <div class="bg-gray-900/70 p-3 rounded-xl border border-rose-900/40 space-y-1">
+                            <label class="flex items-start space-x-2.5 cursor-pointer group">
+                                <input type="checkbox" id="toggle-nonlinear-tyre" onchange="onOptionToggle()" class="mt-0.5 w-4 h-4 rounded text-rose-500 focus:ring-rose-500 bg-gray-800 border-gray-700">
+                                <div>
+                                    <span class="text-xs font-semibold text-white group-hover:text-rose-400 transition flex items-center gap-1.5">
+                                        <span>Non-Linear Tyre Cliff Model</span>
+                                        <span class="text-[9px] bg-rose-950 text-rose-400 border border-rose-800 px-1.5 py-0.2 rounded font-mono">ML Model</span>
+                                    </span>
+                                    <p class="text-[11px] text-gray-400 leading-snug">Uses trained HistGradientBoosting regressor to simulate thermal cliff dropoffs (Soft L18, Med L28, Hard L42).</p>
+                                    <div class="mt-1 flex items-center justify-between text-[10px] font-mono">
+                                        <span class="text-rose-400/90 font-medium">📊 Cliffs: Soft L18 • Med L28 • Hard L42</span>
+                                        <a href="/ml-lab?model=tyre" class="text-rose-400 hover:text-rose-300 underline flex items-center gap-0.5">ML Lab ↗</a>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Full SC Toggle & Slider -->
+                        <div class="bg-gray-900/50 p-3 rounded-xl border border-amber-900/40 space-y-2">
+                            <label class="flex items-start space-x-2.5 cursor-pointer group">
+                                <input type="checkbox" id="toggle-remove-sc" onchange="onOptionToggle()" class="mt-0.5 w-4 h-4 rounded text-amber-500 focus:ring-amber-500 bg-gray-800 border-gray-700">
+                                <div>
+                                    <span class="text-xs font-semibold text-white group-hover:text-amber-400 transition">Remove Lap 20 Full Safety Car</span>
+                                    <p class="text-[11px] text-gray-400">Re-prices stops to green pit loss (22s) and removes bunching.</p>
+                                    <div class="mt-1 flex items-center gap-1.5 text-[10px] font-mono text-amber-400 bg-amber-950/40 px-2 py-0.5 rounded border border-amber-900/40 w-fit font-medium">
+                                        <span>🟡 SC Window: Laps 20–22 (Duration: 3 Laps)</span>
+                                    </div>
+                                </div>
+                            </label>
+                            <div class="border-t border-gray-800 pt-2 space-y-1">
+                                <label class="flex items-center space-x-2.5 cursor-pointer">
+                                    <input type="checkbox" id="toggle-insert-sc" onchange="onInsertSCToggle()" class="w-4 h-4 rounded text-amber-500 focus:ring-amber-500 bg-gray-800 border-gray-700">
+                                    <span class="text-xs text-white">Deploy Alternate SC</span>
+                                </label>
+                                <div id="insert-sc-controls" class="hidden pl-6 space-y-1 pt-1">
+                                    <div class="flex items-center justify-between text-[11px] text-gray-300">
+                                        <span>Start Lap:</span>
+                                        <span id="insert-sc-lap-val" class="font-mono font-bold text-amber-400">35</span>
+                                    </div>
+                                    <input type="range" id="insert-sc-lap" min="5" max="55" value="35" oninput="document.getElementById('insert-sc-lap-val').innerText = this.value; runSimulation()" class="w-full accent-amber-500">
+                                    <p class="text-[10px] font-mono text-amber-400/80">Alternate SC: 3 Laps bunching + 70% compression to 0.8s gap</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VSC Toggle & Slider -->
+                        <div class="bg-gray-900/50 p-3 rounded-xl border border-purple-900/40 space-y-2">
+                            <label class="flex items-start space-x-2.5 cursor-pointer group">
+                                <input type="checkbox" id="toggle-remove-vsc" onchange="onOptionToggle()" class="mt-0.5 w-4 h-4 rounded text-purple-400 focus:ring-purple-400 bg-gray-800 border-gray-700">
+                                <div>
+                                    <span class="text-xs font-semibold text-white group-hover:text-purple-400 transition">Remove Lap 44 Virtual Safety Car</span>
+                                    <p class="text-[11px] text-gray-400">Re-prices Mercedes VSC stop from 13.0s to 22.0s.</p>
+                                    <div class="mt-1 flex items-center gap-1.5 text-[10px] font-mono text-purple-400 bg-purple-950/40 px-2 py-0.5 rounded border border-purple-900/40 w-fit font-medium">
+                                        <span>🟣 VSC Window: Laps 44–45 (Duration: 2 Laps)</span>
+                                    </div>
+                                </div>
+                            </label>
+                            <div class="border-t border-gray-800 pt-2 space-y-1">
+                                <label class="flex items-center space-x-2.5 cursor-pointer">
+                                    <input type="checkbox" id="toggle-insert-vsc" onchange="onInsertVSCToggle()" class="w-4 h-4 rounded text-purple-400 focus:ring-purple-400 bg-gray-800 border-gray-700">
+                                    <span class="text-xs text-white">Deploy Alternate VSC</span>
+                                </label>
+                                <div id="insert-vsc-controls" class="hidden pl-6 space-y-1 pt-1">
+                                    <div class="flex items-center justify-between text-[11px] text-gray-300">
+                                        <span>Start Lap:</span>
+                                        <span id="insert-vsc-lap-val" class="font-mono font-bold text-purple-400">30</span>
+                                    </div>
+                                    <input type="range" id="insert-vsc-lap" min="5" max="55" value="30" oninput="document.getElementById('insert-vsc-lap-val').innerText = this.value; runSimulation()" class="w-full accent-purple-500">
+                                    <p class="text-[10px] font-mono text-purple-400/80">Alternate VSC: 2 Laps slowdown (gaps frozen, 1.35x pace)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pit Optimization Toggle -->
+                        <div class="bg-gray-900/40 p-2.5 rounded-xl border border-gray-800">
+                            <label class="flex items-start space-x-2.5 cursor-pointer group">
+                                <input type="checkbox" id="toggle-replace-slow-stop" onchange="onOptionToggle()" class="mt-0.5 w-4 h-4 rounded text-f1red focus:ring-f1red bg-gray-800 border-gray-700">
+                                <div>
+                                    <span class="text-xs font-semibold text-white group-hover:text-emerald-400 transition">Optimize Stop to Team Median</span>
+                                    <p class="text-[11px] text-gray-400">Saves 1.5s stationary delta.</p>
+                                    <p class="text-[10px] font-mono text-emerald-400/80 mt-1">⚡ Substituted stop: -1.5s delta saving</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Primary Simulation Button -->
+                <button onclick="runSimulation()" class="w-full py-3 bg-f1red hover:bg-red-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-f1red/20 transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    <span>Simulate Strategy</span>
+                </button>
+            </div>
+
+            <!-- Analysis & Highlights Panel -->
+            <div class="bg-f1card border border-f1border rounded-2xl p-5 shadow-xl space-y-2.5">
+                <div class="flex items-center justify-between border-b border-f1border pb-2">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center gap-1.5">
+                        <span>📋</span> Simulation Outcome Summary
+                    </h3>
+                    <span class="text-[10px] bg-gray-900 text-gray-400 border border-gray-800 px-2 py-0.5 rounded font-mono">Modelled Result</span>
+                </div>
+                <div id="explanation-text" class="text-xs text-gray-300 leading-relaxed space-y-2 font-sans">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="border-t border-f1border/80 pt-2 flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono text-gray-400">
+                    <a href="/validation?tab=replay" class="text-emerald-400 hover:text-emerald-300 underline flex items-center gap-1">
+                        <span>✓ 10/10 Replay Proof ↗</span>
+                    </a>
+                    <a href="/validation?tab=backtest" class="text-blue-400 hover:text-blue-300 underline flex items-center gap-1">
+                        <span>📊 Held-Out Backtest ↗</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Active Physics Parameters Card -->
+            <div class="bg-f1card border border-f1border rounded-2xl p-4 shadow-xl space-y-2.5">
+                <div class="flex items-center justify-between border-b border-f1border pb-2">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center gap-1.5">
+                        <span>📐</span> Active Physics Parameters
+                    </h3>
+                    <span class="text-[10px] bg-gray-900 text-gray-400 border border-gray-800 px-2 py-0.5 rounded font-mono">Live Model</span>
+                </div>
+                <div class="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[11px] font-mono">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-500">Soft deg:</span>
+                        <span id="param-deg-soft" class="text-rose-400 font-semibold">+0.082 s/lap</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-500">Med deg:</span>
+                        <span id="param-deg-med" class="text-amber-400 font-semibold">+0.087 s/lap</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-500">Hard deg:</span>
+                        <span id="param-deg-hard" class="text-gray-300 font-semibold">+0.015 s/lap</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-500">Fuel burn:</span>
+                        <span id="param-fuel" class="text-blue-400 font-semibold">-0.048 s/lap</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-500">Green pit:</span>
+                        <span id="param-pit-green" class="text-gray-200 font-semibold">22.0 s</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-500">VSC pit:</span>
+                        <span id="param-pit-vsc" class="text-purple-400 font-semibold">13.0 s</span>
+                    </div>
+                    <div class="flex justify-between items-center col-span-2">
+                        <span class="text-gray-500">SC pit:</span>
+                        <span id="param-pit-sc" class="text-amber-400 font-semibold">18.0 s</span>
+                    </div>
+                </div>
+                <div class="border-t border-gray-800/80 pt-2 text-right">
+                    <a href="/ml-lab?model=tyre" class="text-[10px] text-cyan-400 hover:text-cyan-300 underline font-mono">
+                        Inspect Deg Curves in ML Lab ↗
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Results Table & Interactive Gap Chart (7 cols) -->
+        <div class="lg:col-span-7 space-y-6">
+
+            <!-- Side-by-Side Finishing Order -->
+            <div id="finishing-order-section" class="bg-f1card border border-f1border rounded-2xl p-5 shadow-xl space-y-3">
+                <div class="flex items-center justify-between border-b border-f1border pb-3">
+                    <div>
+                        <h2 class="text-sm font-bold uppercase tracking-wider text-white">
+                            Finishing Order: Actual vs. Simulated
+                        </h2>
+                        <p class="text-xs text-gray-400">Top 10 finishers with simulated delta and strategy</p>
+                    </div>
+                    <div class="flex items-center space-x-2 text-xs">
+                        <span class="flex items-center gap-1 text-[11px]"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Gained</span>
+                        <span class="flex items-center gap-1 text-[11px]"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Lost</span>
+                        <span class="flex items-center gap-1 text-[11px]"><span class="w-2 h-2 rounded-full bg-amber-400"></span> Modified</span>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse font-sans">
+                        <thead>
+                            <tr class="border-b border-gray-800 text-gray-400 uppercase text-[10px] tracking-wider font-mono">
+                                <th class="py-2.5 px-2">Sim</th>
+                                <th class="py-2.5 px-2">Act</th>
+                                <th class="py-2.5 px-2">Δ Pos</th>
+                                <th class="py-2.5 px-2">Driver</th>
+                                <th class="py-2.5 px-2">Team</th>
+                                <th class="py-2.5 px-2">Strategy</th>
+                                <th class="py-2.5 px-2">Traffic & Dirty Air (M1)</th>
+                                <th class="py-2.5 px-2 text-right">Sim Gap</th>
+                                <th class="py-2.5 px-2 text-right">Official Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-table-body" class="divide-y divide-gray-800/60 font-mono text-xs">
+                            <!-- Populated dynamically by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- On-Track Battles & Traffic Telemetry (Model 1) -->
+            <div id="battles-card" class="bg-f1card border border-f1border rounded-2xl p-5 shadow-xl space-y-3">
+                <div class="flex items-center justify-between border-b border-f1border pb-2.5">
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2">
+                            <span>⚔️</span> On-Track Battles & Dirty Air Telemetry (Model 1)
+                        </h3>
+                        <p class="text-[11px] text-gray-400">Proximity encounters and DRS overtaking probabilities evaluated by trained ML classifier</p>
+                    </div>
+                    <span id="traffic-status-indicator" class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800">
+                        ML Active
+                    </span>
+                </div>
+
+                <!-- Driver Specific Traffic Stat Summary -->
+                <div id="driver-traffic-banner" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs font-mono">
+                    <!-- Populated dynamically by JS -->
+                </div>
+
+                <!-- Live Battle Feed -->
+                <div class="space-y-1.5 pt-1">
+                    <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider block font-mono">Key Proximity Encounters:</span>
+                    <div id="traffic-events-feed" class="max-h-40 overflow-y-auto space-y-1.5 text-xs font-mono bg-gray-950/70 p-3 rounded-xl border border-gray-800">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gap to Leader Plotly Chart -->
+            <div id="gap-chart-section" class="bg-f1card border border-f1border rounded-2xl p-5 shadow-xl space-y-3">
+                <div class="flex items-center justify-between border-b border-f1border pb-2">
+                    <div>
+                        <h2 class="text-sm font-bold uppercase tracking-wider text-white">
+                            Gap to Leader Across 62 Laps
+                        </h2>
+                        <p class="text-xs text-gray-400">Solid lines = Simulated Gap • Dashed lines = Recorded Gap</p>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs font-mono text-[11px]">
+                        <span class="text-amber-300">SC: L20-22</span>
+                        <span class="text-purple-300">VSC: L44-45</span>
+                    </div>
+                </div>
+                <div id="gap-chart" class="w-full h-80"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/tutorial.js"></script>
+<script src="/static/app.js"></script>
+<script>
+    function toggleInterventionsPanel() {
+        const p = document.getElementById('interventions-panel');
+        const icon = document.getElementById('interventions-toggle-icon');
+        if (p) {
+            p.classList.toggle('hidden');
+            if (icon) icon.textContent = p.classList.contains('hidden') ? '▶' : '▼';
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Formula 1 Race Strategy Simulator{% endblock %}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Plotly.js CDN -->
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        f1red: '#E10600',
+                        f1dark: '#090B10',
+                        f1card: '#111420',
+                        f1cardhover: '#171B2A',
+                        f1border: '#1D2232',
+                        f1accent: '#2A3145',
+                        ferrari: '#E8002D',
+                        mercedes: '#27F4D2',
+                        mclaren: '#FF8000',
+                        redbull: '#3671C6',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-f1dark text-gray-200 font-sans antialiased min-h-screen flex flex-col selection:bg-f1red selection:text-white">
+
+    <!-- Top Navigation Header -->
+    <header id="header-banner" class="border-b border-f1border bg-f1card/95 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- Left: Brand & Page Context -->
+            <div class="flex items-center space-x-3.5">
+                <a href="/" class="flex items-center space-x-2.5 group">
+                    <div class="bg-f1red text-white font-black italic px-2.5 py-0.5 rounded tracking-tighter text-base shadow-md shadow-f1red/30 group-hover:scale-105 transition transform">
+                        F1 WHAT-IF
+                    </div>
+                    <span class="text-base font-bold tracking-tight text-white group-hover:text-red-400 transition">
+                        Simulator
+                    </span>
+                </a>
+                <span class="text-gray-600 hidden sm:inline">|</span>
+                <span class="text-xs text-gray-400 hidden sm:inline font-mono">
+                    2023 Singapore Grand Prix • Marina Bay (62 Laps)
+                </span>
+            </div>
+
+            <!-- Center: Multi-Page Navigation Bar -->
+            <nav class="flex items-center bg-gray-950/80 p-1 rounded-xl border border-f1border/80 shadow-inner">
+                <a href="/" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition {% if page == 'studio' %}bg-f1red text-white shadow-md shadow-f1red/20{% else %}text-gray-400 hover:text-white hover:bg-gray-800/50{% endif %}">
+                    <span>🏁</span>
+                    <span>Race Studio</span>
+                </a>
+                <a href="/ml-lab" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition {% if page == 'ml_lab' %}bg-f1red text-white shadow-md shadow-f1red/20{% else %}text-gray-400 hover:text-white hover:bg-gray-800/50{% endif %}">
+                    <span>🧠</span>
+                    <span>ML Lab</span>
+                    <span class="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800/60 px-1.5 py-0.2 rounded font-mono">3 Models</span>
+                </a>
+                <a href="/validation" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition {% if page == 'validation' %}bg-f1red text-white shadow-md shadow-f1red/20{% else %}text-gray-400 hover:text-white hover:bg-gray-800/50{% endif %}">
+                    <span>📊</span>
+                    <span>Validation</span>
+                    <span class="text-[10px] bg-blue-950 text-blue-400 border border-blue-800/60 px-1.5 py-0.2 rounded font-mono">10/10</span>
+                </a>
+            </nav>
+
+            <!-- Right: Reset Action & Status Indicators -->
+            <div class="flex items-center space-x-2.5 text-xs">
+                <button onclick="handleGlobalReset()" class="bg-gray-900 hover:bg-gray-800 border border-gray-700 hover:border-amber-400 text-gray-200 hover:text-white font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow transition">
+                    <span class="text-amber-400">↺</span>
+                    <span>Reset to Race</span>
+                </button>
+                <button onclick="if(typeof startTutorial==='function') startTutorial();" class="bg-gray-900 hover:bg-gray-800 border border-gray-700 hover:border-purple-400 text-gray-200 hover:text-purple-300 font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow transition">
+                    <span class="text-purple-400">?</span>
+                    <span>Tutorial</span>
+                </button>
+                <div class="bg-gray-900/80 border border-gray-800 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 text-gray-300">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="text-[11px] font-mono">Telemetry Active</span>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 md:px-6 py-6 space-y-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Clean Modern Footer -->
+    <footer class="border-t border-f1border bg-f1card/50 py-5 text-center text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p>Formula 1 Strategy Simulator • Multi-Model Machine Learning Prototype • FastF1 & OpenF1 Data</p>
+            <p class="font-mono text-gray-400 text-[11px]">All results are simulated counterfactuals under declared assumptions.</p>
+        </div>
+    </footer>
+
+    <script>
+        function handleGlobalReset() {
+            if (window.location.pathname === '/') {
+                if (typeof resetToBaseline === 'function') resetToBaseline(true);
+            } else {
+                window.location.href = '/?reset=1';
+            }
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

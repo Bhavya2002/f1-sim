@@ -1,0 +1,147 @@
+{
+  "chosen_race": "2023 Singapore Grand Prix",
+  "session_key": 9165,
+  "meets_criteria": {
+    "season_ge_2023": true,
+    "has_safety_car": true,
+    "has_vsc": true,
+    "points_finishers_complete": true
+  },
+  "points_finishers": [
+    {
+      "pos": 1,
+      "driver_number": 55,
+      "code": "SAI",
+      "name": "Carlos Sainz",
+      "team": "Ferrari",
+      "scheduled_laps": 62,
+      "recorded_laps": 62,
+      "missing_laps": 0,
+      "coverage_pct": 100.0,
+      "penalty_seconds": 0,
+      "official_time": "1:46:37.418"
+    },
+    {
+      "pos": 2,
+      "driver_number": 4,
+      "code": "NOR",
+      "name": "Lando Norris",
+      "team": "McLaren",
+      "scheduled_laps": 62,
+      "recorded_laps": 62,
+      "missing_laps": 0,
+      "coverage_pct": 100.0,
+      "penalty_seconds": 0,
+      "official_time": "+0.812s"
+    },
+    {
+      "pos": 3,
+      "driver_number": 44,
+      "code": "HAM",
+      "name": "Lewis Hamilton",
+      "team": "Mercedes",
+      "scheduled_laps": 62,
+      "recorded_laps": 62,
+      "missing_laps": 0,
+      "coverage_pct": 100.0,
+      "penalty_seconds": 0,
+      "official_time": "+1.269s"
+    },
+    {
+      "pos": 4,
+      "driver_number": 16,
+      "code": "LEC",
+      "name": "Charles Leclerc",
+      "team": "Ferrari",
+      "scheduled_laps": 62,
+      "recorded_laps": 62,
+      "missing_laps": 0,
+      "coverage_pct": 100.0,
+      "penalty_seconds": 0,
+      "official_time": "+21.177s"
+    },
+    {
+      "pos": 5,
+      "driver_number": 1,
+      "code": "VER",
+      "name": "Max Verstappen",
+      "team": "Red Bull Racing",
+      "scheduled_laps": 62,
+      "recorded_laps": 62,
+      "missing_laps": 0,
+      "coverage_pct": 100.0,
+      "penalty_seconds": 0,
+      "official_time": "+21.441s"
+    },
+    {
+      "pos": 6,
+      "driver_number": 10,
+      "code": "GAS",
+      "name": "Pierre Gasly",
+      "team": "Alpine",
+      "scheduled_laps": 62,
+      "recorded_laps": 62,
+      "missing_laps": 0,
+      "coverage_pct": 100.0,
+      "penalty_seconds": 0,
+      "official_time": "+38.441s"
+    },
+    {
+      "pos": 7,
+      "driver_number": 81,
+      "code": "PIA",
+      "name": "Oscar Piastri",
+      "team": "McLaren",
+      "scheduled_laps": 62,
+      "recorded_laps": 62,
+      "missing_laps": 0,
+      "coverage_pct": 100.0,
+      "penalty_seconds": 0,
+      "official_time": "+41.479s"
+    },
+    {
+      "pos": 8,
+      "driver_number": 11,
+      "code": "PER",
+      "name": "Sergio Perez",
+      "team": "Red Bull Racing",
+      "scheduled_laps": 62,
+      "recorded_laps": 62,
+      "missing_laps": 0,
+      "coverage_pct": 100.0,
+      "penalty_seconds": 5,
+      "official_time": "+54.534s"
+    },
+    {
+      "pos": 9,
+      "driver_number": 40,
+      "code": "LAW",
+      "name": "Liam Lawson",
+      "team": "AlphaTauri",
+      "scheduled_laps": 62,
+      "recorded_laps": 62,
+      "missing_laps": 0,
+      "coverage_pct": 100.0,
+      "penalty_seconds": 0,
+      "official_time": "+65.918s"
+    },
+    {
+      "pos": 10,
+      "driver_number": 20,
+      "code": "MAG",
+      "name": "Kevin Magnussen",
+      "team": "Haas",
+      "scheduled_laps": 62,
+      "recorded_laps": 62,
+      "missing_laps": 0,
+      "coverage_pct": 100.0,
+      "penalty_seconds": 0,
+      "official_time": "+72.116s"
+    }
+  ],
+  "pit_fallbacks": {
+    "lane_duration_available": true,
+    "stop_duration_available": false,
+    "fallback_used": "lane_duration with team median stationary time (2.8s) fallback for 2023 season"
+  }
+}
