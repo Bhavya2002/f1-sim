@@ -35,20 +35,20 @@
             <div class="flex items-center gap-2">
                 <span class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
                     <span class="px-1.5 py-0.5 rounded bg-f1red text-white text-[10px] font-mono">AI</span>
-                    Natural Language Strategy Command
+                    Strategy Assistant
                 </span>
-                <a href="/ml-lab?model=nlp" class="text-[10px] bg-emerald-950 text-emerald-400 hover:text-emerald-300 border border-emerald-800/60 px-2 py-0.5 rounded-full font-mono hidden sm:inline-flex items-center gap-1 transition" title="Test Local NLP Intent Model in ML Lab">
-                    <span>Local NLP Model Active</span>
+                <a href="/ml-lab?model=nlp" class="text-[10px] bg-emerald-950 text-emerald-400 hover:text-emerald-300 border border-emerald-800/60 px-2 py-0.5 rounded-full font-mono hidden sm:inline-flex items-center gap-1 transition" title="Inspect AI Language Model in ML Lab">
+                    <span>AI Race Engineer Ready</span>
                     <span class="text-[9px]">↗</span>
                 </a>
             </div>
-            <span class="text-xs text-gray-400 font-mono text-[11px]">Type natural instructions or analytical questions</span>
+            <span class="text-xs text-gray-400 font-mono text-[11px]">Ask questions or type instructions in plain English</span>
         </div>
 
         <form onsubmit="handleChatSubmit(event)" class="flex gap-2">
             <div class="relative flex-1">
                 <input type="text" id="ai-chat-input"
-                    placeholder='Type a command (e.g. "make Sainz pit one lap earlier", "what if no safety car?", "switch Norris to 2-stop on Softs")...'
+                    placeholder='Type any command or question (e.g. "make Sainz pit one lap earlier", "what if no safety car?", "switch Norris to 2-stop on Softs")...'
                     class="w-full bg-gray-950/80 border border-f1border rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-f1red focus:ring-1 focus:ring-f1red transition shadow-inner font-sans">
             </div>
             <button type="submit" id="chat-submit-btn" class="px-5 py-2.5 bg-f1red hover:bg-red-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-f1red/20 transition flex items-center gap-1.5 whitespace-nowrap">
@@ -159,13 +159,13 @@
                                 <input type="checkbox" id="toggle-traffic-model" onchange="onOptionToggle()" class="mt-0.5 w-4 h-4 rounded text-cyan-500 focus:ring-cyan-500 bg-gray-800 border-gray-700">
                                 <div>
                                     <span class="text-xs font-semibold text-white group-hover:text-cyan-400 transition flex items-center gap-1.5">
-                                        <span>Traffic & Dirty Air Dynamics</span>
-                                        <span class="text-[9px] bg-cyan-950 text-cyan-400 border border-cyan-800 px-1.5 py-0.2 rounded font-mono">ML Model</span>
+                                        <span>Traffic & Dirty Air Simulator</span>
+                                        <span class="text-[9px] bg-cyan-950 text-cyan-400 border border-cyan-800 px-1.5 py-0.2 rounded font-mono">Model 1</span>
                                     </span>
-                                    <p class="text-[11px] text-gray-400 leading-snug">Evaluates trained overtake classifier within 1.0s. Blocks cars with +0.75s dirty air penalty if P(pass) &lt; 0.5.</p>
+                                    <p class="text-[11px] text-gray-400 leading-snug">Simulates real traffic on track. If a car catches another car, the model tests if they can overtake or if they get trapped losing 0.75s per lap in dirty air.</p>
                                     <div class="mt-1 flex items-center justify-between text-[10px] font-mono">
-                                        <span class="text-cyan-400/90 font-medium">⚡ Proximity: Gap ≤ 1.2s • Loss: +0.75s</span>
-                                        <a href="/ml-lab?model=traffic" class="text-cyan-400 hover:text-cyan-300 underline flex items-center gap-0.5">ML Lab ↗</a>
+                                        <span class="text-cyan-400/90 font-medium">⚡ Battle Range: Within 1.2s • Traffic Penalty: +0.75s/lap</span>
+                                        <a href="/ml-lab?model=traffic" class="text-cyan-400 hover:text-cyan-300 underline flex items-center gap-0.5">Explore Model 1 ↗</a>
                                     </div>
                                 </div>
                             </label>
@@ -177,13 +177,13 @@
                                 <input type="checkbox" id="toggle-nonlinear-tyre" onchange="onOptionToggle()" class="mt-0.5 w-4 h-4 rounded text-rose-500 focus:ring-rose-500 bg-gray-800 border-gray-700">
                                 <div>
                                     <span class="text-xs font-semibold text-white group-hover:text-rose-400 transition flex items-center gap-1.5">
-                                        <span>Non-Linear Tyre Cliff Model</span>
-                                        <span class="text-[9px] bg-rose-950 text-rose-400 border border-rose-800 px-1.5 py-0.2 rounded font-mono">ML Model</span>
+                                        <span>Tire Wear & Sudden Grip Drop-Off</span>
+                                        <span class="text-[9px] bg-rose-950 text-rose-400 border border-rose-800 px-1.5 py-0.2 rounded font-mono">Model 2</span>
                                     </span>
-                                    <p class="text-[11px] text-gray-400 leading-snug">Uses trained HistGradientBoosting regressor to simulate thermal cliff dropoffs (Soft L18, Med L28, Hard L42).</p>
+                                    <p class="text-[11px] text-gray-400 leading-snug">Simulates realistic tire wear. Instead of wearing evenly, tires suddenly lose grip ("hit the cliff") when pushed too long: Softs ~L18, Mediums ~L28, Hards ~L42.</p>
                                     <div class="mt-1 flex items-center justify-between text-[10px] font-mono">
-                                        <span class="text-rose-400/90 font-medium">📊 Cliffs: Soft L18 • Med L28 • Hard L42</span>
-                                        <a href="/ml-lab?model=tyre" class="text-rose-400 hover:text-rose-300 underline flex items-center gap-0.5">ML Lab ↗</a>
+                                        <span class="text-rose-400/90 font-medium">📊 Grip Cliffs: Soft ~L18 • Medium ~L28 • Hard ~L42</span>
+                                        <a href="/ml-lab?model=tyre" class="text-rose-400 hover:text-rose-300 underline flex items-center gap-0.5">Explore Model 2 ↗</a>
                                     </div>
                                 </div>
                             </label>
@@ -195,16 +195,16 @@
                                 <input type="checkbox" id="toggle-remove-sc" onchange="onOptionToggle()" class="mt-0.5 w-4 h-4 rounded text-amber-500 focus:ring-amber-500 bg-gray-800 border-gray-700">
                                 <div>
                                     <span class="text-xs font-semibold text-white group-hover:text-amber-400 transition">Remove Lap 20 Full Safety Car</span>
-                                    <p class="text-[11px] text-gray-400">Re-prices stops to green pit loss (22s) and removes bunching.</p>
+                                    <p class="text-[11px] text-gray-400">Simulates what happens without the Safety Car. Pits take normal race time (~22s instead of cheap ~14s stops) and cars do not bunch up.</p>
                                     <div class="mt-1 flex items-center gap-1.5 text-[10px] font-mono text-amber-400 bg-amber-950/40 px-2 py-0.5 rounded border border-amber-900/40 w-fit font-medium">
-                                        <span>🟡 SC Window: Laps 20–22 (Duration: 3 Laps)</span>
+                                        <span>🟡 SC Window: Laps 20–22 (3 Laps long)</span>
                                     </div>
                                 </div>
                             </label>
                             <div class="border-t border-gray-800 pt-2 space-y-1">
                                 <label class="flex items-center space-x-2.5 cursor-pointer">
                                     <input type="checkbox" id="toggle-insert-sc" onchange="onInsertSCToggle()" class="w-4 h-4 rounded text-amber-500 focus:ring-amber-500 bg-gray-800 border-gray-700">
-                                    <span class="text-xs text-white">Deploy Alternate SC</span>
+                                    <span class="text-xs text-white">Deploy Safety Car on Another Lap</span>
                                 </label>
                                 <div id="insert-sc-controls" class="hidden pl-6 space-y-1 pt-1">
                                     <div class="flex items-center justify-between text-[11px] text-gray-300">
@@ -212,7 +212,7 @@
                                         <span id="insert-sc-lap-val" class="font-mono font-bold text-amber-400">35</span>
                                     </div>
                                     <input type="range" id="insert-sc-lap" min="5" max="55" value="35" oninput="document.getElementById('insert-sc-lap-val').innerText = this.value; runSimulation()" class="w-full accent-amber-500">
-                                    <p class="text-[10px] font-mono text-amber-400/80">Alternate SC: 3 Laps bunching + 70% compression to 0.8s gap</p>
+                                    <p class="text-[10px] font-mono text-amber-400/80">Safety Car compresses the field together and provides cheaper pit stops.</p>
                                 </div>
                             </div>
                         </div>
@@ -222,17 +222,17 @@
                             <label class="flex items-start space-x-2.5 cursor-pointer group">
                                 <input type="checkbox" id="toggle-remove-vsc" onchange="onOptionToggle()" class="mt-0.5 w-4 h-4 rounded text-purple-400 focus:ring-purple-400 bg-gray-800 border-gray-700">
                                 <div>
-                                    <span class="text-xs font-semibold text-white group-hover:text-purple-400 transition">Remove Lap 44 Virtual Safety Car</span>
-                                    <p class="text-[11px] text-gray-400">Re-prices Mercedes VSC stop from 13.0s to 22.0s.</p>
+                                    <span class="text-xs font-semibold text-white group-hover:text-purple-400 transition">Remove Lap 44 Virtual Safety Car (VSC)</span>
+                                    <p class="text-[11px] text-gray-400">Prevents Mercedes from making their cheap Lap 44 pit stop for fresh tires, keeping them on their original 1-stop strategy.</p>
                                     <div class="mt-1 flex items-center gap-1.5 text-[10px] font-mono text-purple-400 bg-purple-950/40 px-2 py-0.5 rounded border border-purple-900/40 w-fit font-medium">
-                                        <span>🟣 VSC Window: Laps 44–45 (Duration: 2 Laps)</span>
+                                        <span>🟣 VSC Window: Laps 44–45 (2 Laps long)</span>
                                     </div>
                                 </div>
                             </label>
                             <div class="border-t border-gray-800 pt-2 space-y-1">
                                 <label class="flex items-center space-x-2.5 cursor-pointer">
                                     <input type="checkbox" id="toggle-insert-vsc" onchange="onInsertVSCToggle()" class="w-4 h-4 rounded text-purple-400 focus:ring-purple-400 bg-gray-800 border-gray-700">
-                                    <span class="text-xs text-white">Deploy Alternate VSC</span>
+                                    <span class="text-xs text-white">Deploy Virtual Safety Car on Another Lap</span>
                                 </label>
                                 <div id="insert-vsc-controls" class="hidden pl-6 space-y-1 pt-1">
                                     <div class="flex items-center justify-between text-[11px] text-gray-300">
@@ -240,7 +240,7 @@
                                         <span id="insert-vsc-lap-val" class="font-mono font-bold text-purple-400">30</span>
                                     </div>
                                     <input type="range" id="insert-vsc-lap" min="5" max="55" value="30" oninput="document.getElementById('insert-vsc-lap-val').innerText = this.value; runSimulation()" class="w-full accent-purple-500">
-                                    <p class="text-[10px] font-mono text-purple-400/80">Alternate VSC: 2 Laps slowdown (gaps frozen, 1.35x pace)</p>
+                                    <p class="text-[10px] font-mono text-purple-400/80">Virtual Safety Car slows cars by ~35% while freezing distances between them.</p>
                                 </div>
                             </div>
                         </div>
@@ -250,9 +250,9 @@
                             <label class="flex items-start space-x-2.5 cursor-pointer group">
                                 <input type="checkbox" id="toggle-replace-slow-stop" onchange="onOptionToggle()" class="mt-0.5 w-4 h-4 rounded text-f1red focus:ring-f1red bg-gray-800 border-gray-700">
                                 <div>
-                                    <span class="text-xs font-semibold text-white group-hover:text-emerald-400 transition">Optimize Stop to Team Median</span>
-                                    <p class="text-[11px] text-gray-400">Saves 1.5s stationary delta.</p>
-                                    <p class="text-[10px] font-mono text-emerald-400/80 mt-1">⚡ Substituted stop: -1.5s delta saving</p>
+                                    <span class="text-xs font-semibold text-white group-hover:text-emerald-400 transition">Fix Delayed Pit Stops</span>
+                                    <p class="text-[11px] text-gray-400">Replaces delayed pit stops (like Charles Leclerc's 5.7s delay) with a fast, normal 2.4s pit stop.</p>
+                                    <p class="text-[10px] font-mono text-emerald-400/80 mt-1">⚡ Saves ~1.5s stationary pit time</p>
                                 </div>
                             </label>
                         </div>
@@ -297,37 +297,37 @@
                 </div>
                 <div class="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[11px] font-mono">
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-500">Soft deg:</span>
+                        <span class="text-gray-500 font-sans">Soft tire wear:</span>
                         <span id="param-deg-soft" class="text-rose-400 font-semibold">+0.082 s/lap</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-500">Med deg:</span>
+                        <span class="text-gray-500 font-sans">Medium tire wear:</span>
                         <span id="param-deg-med" class="text-amber-400 font-semibold">+0.087 s/lap</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-500">Hard deg:</span>
+                        <span class="text-gray-500 font-sans">Hard tire wear:</span>
                         <span id="param-deg-hard" class="text-gray-300 font-semibold">+0.015 s/lap</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-500">Fuel burn:</span>
+                        <span class="text-gray-500 font-sans">Fuel burn gain:</span>
                         <span id="param-fuel" class="text-blue-400 font-semibold">-0.048 s/lap</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-500">Green pit:</span>
+                        <span class="text-gray-500 font-sans">Full speed pit:</span>
                         <span id="param-pit-green" class="text-gray-200 font-semibold">22.0 s</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-500">VSC pit:</span>
+                        <span class="text-gray-500 font-sans">VSC pit time:</span>
                         <span id="param-pit-vsc" class="text-purple-400 font-semibold">13.0 s</span>
                     </div>
                     <div class="flex justify-between items-center col-span-2">
-                        <span class="text-gray-500">SC pit:</span>
+                        <span class="text-gray-500 font-sans">Safety Car pit time:</span>
                         <span id="param-pit-sc" class="text-amber-400 font-semibold">18.0 s</span>
                     </div>
                 </div>
                 <div class="border-t border-gray-800/80 pt-2 text-right">
                     <a href="/ml-lab?model=tyre" class="text-[10px] text-cyan-400 hover:text-cyan-300 underline font-mono">
-                        Inspect Deg Curves in ML Lab ↗
+                        Inspect Tire Curves in ML Lab ↗
                     </a>
                 </div>
             </div>
@@ -362,8 +362,8 @@
                                 <th class="py-2.5 px-2">Driver</th>
                                 <th class="py-2.5 px-2">Team</th>
                                 <th class="py-2.5 px-2">Strategy</th>
-                                <th class="py-2.5 px-2">Traffic & Dirty Air (M1)</th>
-                                <th class="py-2.5 px-2 text-right">Sim Gap</th>
+                                <th class="py-2.5 px-2">Traffic Status</th>
+                                <th class="py-2.5 px-2 text-right">Simulated Gap</th>
                                 <th class="py-2.5 px-2 text-right">Official Time</th>
                             </tr>
                         </thead>
@@ -379,12 +379,12 @@
                 <div class="flex items-center justify-between border-b border-f1border pb-2.5">
                     <div>
                         <h3 class="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2">
-                            <span>⚔️</span> On-Track Battles & Dirty Air Telemetry (Model 1)
+                            <span>⚔️</span> On-Track Battles & Overtaking (Model 1)
                         </h3>
-                        <p class="text-[11px] text-gray-400">Proximity encounters and DRS overtaking probabilities evaluated by trained ML classifier</p>
+                        <p class="text-[11px] text-gray-400">Close racing within 1 second: see who made the pass and who got held up in traffic</p>
                     </div>
                     <span id="traffic-status-indicator" class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800">
-                        ML Active
+                        Model 1 Active
                     </span>
                 </div>
 
@@ -395,7 +395,7 @@
 
                 <!-- Live Battle Feed -->
                 <div class="space-y-1.5 pt-1">
-                    <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider block font-mono">Key Proximity Encounters:</span>
+                    <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider block font-mono">Wheel-to-Wheel Encounters:</span>
                     <div id="traffic-events-feed" class="max-h-40 overflow-y-auto space-y-1.5 text-xs font-mono bg-gray-950/70 p-3 rounded-xl border border-gray-800">
                         <!-- Populated by JS -->
                     </div>

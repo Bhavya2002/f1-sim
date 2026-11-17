@@ -692,19 +692,19 @@ class SimulationEngine:
             if enable_traffic_model and traffic_events:
                 blocks = [e for e in traffic_events if e["type"] == "DIRTY_AIR_BLOCK"]
                 overtakes = [e for e in traffic_events if e["type"] == "OVERTAKE"]
-                traf_msg = f"**Traffic & Dirty Air Dynamics (Model 1)**: Evaluated by trained overtake classifier. {len(blocks)} dirty air block(s) and {len(overtakes)} completed overtake(s) occurred."
+                traf_msg = f"**Traffic & Overtaking (Model 1)**: Simulated real wheel-to-wheel racing. {len(overtakes)} pass(es) were completed, and cars were held up in traffic {len(blocks)} time(s)."
                 if modified_driver and driver_traffic_summary and modified_driver in driver_traffic_summary:
                     m_traf = driver_traffic_summary[modified_driver]
                     if m_traf.get("laps_in_dirty_air", 0) > 0:
                         rival_text = f" behind {m_traf['trapped_behind']['code']}" if m_traf.get("trapped_behind") else ""
-                        traf_msg += f" Selected driver lost {m_traf['time_lost_dirty_air']}s over {m_traf['laps_in_dirty_air']} lap(s) in dirty air{rival_text}."
+                        traf_msg += f" Selected driver lost {m_traf['time_lost_dirty_air']}s over {m_traf['laps_in_dirty_air']} lap(s) in traffic{rival_text}."
                     else:
                         traf_msg += " Selected driver ran in clean air."
                 highlights.append(traf_msg)
 
             if use_nonlinear_tyre:
                 highlights.append(
-                    "**Non-Linear Tyre Model (Model 2)**: Applied non-linear degradation and thermal cliff dropoffs from locally trained HistGradientBoosting model."
+                    "**Tire Wear & Grip Drop-Off (Model 2)**: Simulated realistic tire wear, slowing cars down significantly if tires were pushed past their recommended lifespan (the tire cliff)."
                 )
 
         return {

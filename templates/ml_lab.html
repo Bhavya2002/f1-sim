@@ -49,9 +49,9 @@
             </a>
         </div>
         <div class="flex flex-wrap items-center gap-3 font-mono text-[11px] text-gray-400">
-            <span>Dirty Air Penalty: <strong class="text-amber-400">+0.75s/lap</strong></span>
-            <span>DRS Delta: <strong class="text-emerald-400">+0.30s</strong></span>
-            <span>Cliff Threshold: <strong class="text-rose-400">Pirelli C3/C4</strong></span>
+            <span>Traffic Slowdown: <strong class="text-amber-400">+0.75s per lap</strong></span>
+            <span>DRS Straight-Line Boost: <strong class="text-emerald-400">+0.30s speed</strong></span>
+            <span>Tire Life Model: <strong class="text-rose-400">Pirelli Real Wear</strong></span>
         </div>
     </div>
 
@@ -62,37 +62,49 @@
         <div id="card-model-1" class="bg-f1card border border-f1border rounded-2xl p-5 shadow-xl space-y-4 transition-all duration-300">
             <div class="flex items-center justify-between border-b border-f1border pb-2.5">
                 <div>
-                    <span class="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold block">Model 1 • Classification</span>
-                    <h2 class="text-sm font-bold text-white">Traffic & Overtake Model</h2>
+                    <span class="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold block">Model 1 • Overtaking Simulator</span>
+                    <h2 class="text-sm font-bold text-white">Traffic & Overtake Model: On-Track Battles</h2>
                 </div>
                 <span class="text-xs bg-cyan-950 text-cyan-300 border border-cyan-800/80 px-2 py-0.5 rounded font-mono font-semibold" id="traffic-acc-badge">
-                    98.0% Acc
+                    98.0% Accuracy
                 </span>
             </div>
 
             <p class="text-xs text-gray-400 leading-relaxed">
-                Predicts whether a car trailing within 1.0s can overtake based on pace advantage, tyre age delta, and DRS availability, or gets trapped in dirty air (+0.75s penalty).
+                When a faster car catches another car, can they make the pass? This model checks their speed advantage, tire freshness, and gap distance. If they can't get past, the car gets stuck in turbulent "dirty air" and loses 0.75s every lap.
             </p>
 
-            <!-- Feature Importance Bars -->
+            <!-- What Decides the Overtake -->
             <div class="space-y-1.5 bg-gray-950/70 p-3 rounded-xl border border-gray-800 text-xs">
-                <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider block font-mono">Feature Weights:</span>
-                <div class="space-y-1 font-mono text-[11px]">
-                    <div class="flex justify-between text-emerald-400">
-                        <span>Pace Advantage:</span>
-                        <span class="font-bold">+6.64</span>
+                <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider block font-mono">What Decides If an Overtake Happens?</span>
+                <div class="space-y-1.5 text-[11px]">
+                    <div class="flex justify-between items-center text-emerald-400">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            Speed Advantage (Pace):
+                        </span>
+                        <span class="font-bold text-emerald-300 font-mono">Biggest Factor (+6.6x)</span>
                     </div>
-                    <div class="flex justify-between text-rose-400">
-                        <span>Initial Gap (Penalty):</span>
-                        <span class="font-bold">-1.65</span>
+                    <div class="flex justify-between items-center text-rose-400">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                            Gap Distance:
+                        </span>
+                        <span class="font-bold text-rose-300 font-mono">Harder if &gt; 0.5s back</span>
                     </div>
-                    <div class="flex justify-between text-cyan-400">
-                        <span>Tyre Age Delta:</span>
-                        <span class="font-bold">+0.94</span>
+                    <div class="flex justify-between items-center text-cyan-400">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                            Fresher Tires:
+                        </span>
+                        <span class="font-bold text-cyan-300 font-mono">Better Corner Grip (+0.9x)</span>
                     </div>
-                    <div class="flex justify-between text-amber-400">
-                        <span>Speed Trap Delta:</span>
-                        <span class="font-bold">+0.23</span>
+                    <div class="flex justify-between items-center text-amber-400">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                            Straight-Line DRS Speed:
+                        </span>
+                        <span class="font-bold text-amber-300 font-mono">Top Speed Boost</span>
                     </div>
                 </div>
             </div>
@@ -101,27 +113,27 @@
             <div class="space-y-3 bg-gray-900/60 p-3.5 rounded-xl border border-cyan-900/40">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-cyan-300 uppercase tracking-wider block">
-                        Interactive Overtake Tester
+                        Test a Wheel-to-Wheel Battle
                     </span>
-                    <span class="text-[10px] text-gray-400 font-mono">Logistic Classifier</span>
+                    <span class="text-[10px] text-gray-400 font-mono">Interactive Tester</span>
                 </div>
 
                 <!-- Battle Scenario Presets -->
                 <div class="flex flex-wrap gap-1 pt-0.5">
                     <button type="button" onclick="loadBattlePreset(1.4, 24, 0.45)" class="text-[10px] bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-800 px-2 py-0.5 rounded font-mono transition">
-                        HAM vs NOR (L58)
+                        HAM chasing NOR (Lap 58)
                     </button>
                     <button type="button" onclick="loadBattlePreset(-0.2, 0, 0.75)" class="text-[10px] bg-amber-950 hover:bg-amber-900 text-amber-300 border border-amber-800 px-2 py-0.5 rounded font-mono transition">
-                        SAI DRS Train
+                        Sainz DRS Train Defense
                     </button>
                     <button type="button" onclick="loadBattlePreset(1.8, 18, 0.35)" class="text-[10px] bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-800 px-2 py-0.5 rounded font-mono transition">
-                        VER Fresh Medium
+                        Verstappen on Fresh Tires
                     </button>
                 </div>
 
                 <div class="space-y-1">
                     <div class="flex justify-between text-[11px]">
-                        <span class="text-gray-400">Pace Advantage:</span>
+                        <span class="text-gray-400">Chasing Car Speed Advantage:</span>
                         <span id="test-pace-val" class="font-mono text-cyan-400 font-bold">+1.2s</span>
                     </div>
                     <input type="range" id="test-pace-slider" min="-1.0" max="2.5" step="0.1" value="1.2" oninput="updateOvertakeCalc()" class="w-full accent-cyan-500">
@@ -129,7 +141,7 @@
 
                 <div class="space-y-1">
                     <div class="flex justify-between text-[11px]">
-                        <span class="text-gray-400">Tyre Age Difference:</span>
+                        <span class="text-gray-400">Tire Freshness Advantage:</span>
                         <span id="test-tyre-val" class="font-mono text-cyan-400 font-bold">+14 laps</span>
                     </div>
                     <input type="range" id="test-tyre-slider" min="-15" max="30" step="1" value="14" oninput="updateOvertakeCalc()" class="w-full accent-cyan-500">
@@ -137,7 +149,7 @@
 
                 <div class="space-y-1">
                     <div class="flex justify-between text-[11px]">
-                        <span class="text-gray-400">Gap Entering Lap:</span>
+                        <span class="text-gray-400">Starting Gap Entering the Lap:</span>
                         <span id="test-gap-val" class="font-mono text-cyan-400 font-bold">0.45s</span>
                     </div>
                     <input type="range" id="test-gap-slider" min="0.1" max="1.5" step="0.05" value="0.45" oninput="updateOvertakeCalc()" class="w-full accent-cyan-500">
@@ -145,14 +157,17 @@
 
                 <!-- Probability Result Output -->
                 <div class="border-t border-gray-800 pt-2 flex items-center justify-between">
-                    <span class="text-xs text-gray-300">Overtake Probability:</span>
+                    <span class="text-xs text-gray-300">Chance of Passing:</span>
                     <span id="calc-prob-result" class="text-sm font-bold font-mono text-emerald-400">84.2%</span>
                 </div>
                 <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
                     <div id="calc-prob-bar" class="bg-emerald-500 h-full transition-all duration-300" style="width: 84%"></div>
                 </div>
-                <button type="button" onclick="applyBattleToStudio()" class="w-full py-2 bg-cyan-950 hover:bg-cyan-900 border border-cyan-800 text-cyan-300 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5 mt-2">
-                    <span>▶ Simulate with ML Traffic in Studio ➔</span>
+                <div id="calc-prob-verdict" class="text-[11px] leading-snug pt-0.5">
+                    <!-- Populated by JS -->
+                </div>
+                <button type="button" onclick="applyBattleToStudio()" class="w-full py-2 bg-cyan-950 hover:bg-cyan-900 border border-cyan-800 text-cyan-300 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5 mt-1">
+                    <span>▶ Test This in Race Studio with Traffic ➔</span>
                 </button>
             </div>
         </div>
@@ -161,41 +176,46 @@
         <div id="card-model-2" class="bg-f1card border border-f1border rounded-2xl p-5 shadow-xl space-y-4 transition-all duration-300">
             <div class="flex items-center justify-between border-b border-f1border pb-2.5">
                 <div>
-                    <span class="text-[10px] font-mono uppercase tracking-wider text-rose-400 font-bold block">Model 2 • Regression</span>
-                    <h2 class="text-sm font-bold text-white">Non-Linear Tyre Cliff</h2>
+                    <span class="text-[10px] font-mono uppercase tracking-wider text-rose-400 font-bold block">Model 2 • Tire Wear Predictor</span>
+                    <h2 class="text-sm font-bold text-white">Tire Wear & Sudden Grip Drop-Off</h2>
                 </div>
-                <span class="text-xs bg-rose-950 text-rose-300 border border-rose-800/80 px-2 py-0.5 rounded font-mono font-semibold">
-                    MAE: 0.024s
+                <span class="text-xs bg-rose-950 text-rose-300 border border-rose-800/80 px-2 py-0.5 rounded font-mono font-semibold" title="Accurate within 0.02 seconds of real FastF1 telemetry lap times">
+                    ±0.02s Error
                 </span>
             </div>
 
             <p class="text-xs text-gray-400 leading-relaxed">
-                Trained HistGradientBoosting regressor capturing the 3 phases of Pirelli tyre life: scrub-in, steady linear degradation, and thermal cliff breakdown.
+                F1 tires don't wear out at a constant pace. They start grippy, wear gradually, and then suddenly hit a <strong>"tire cliff"</strong> where grip collapses and lap times drop by seconds. This model accurately predicts when each tire type runs out of life.
             </p>
 
             <!-- Cliff Laps Summary Pill -->
             <div class="grid grid-cols-3 gap-2 text-center font-mono text-xs">
-                <div class="bg-gray-950/70 p-2 rounded-xl border border-red-900/40">
-                    <span class="text-[10px] text-gray-500 block">SOFT CLIFF</span>
-                    <span class="text-rose-400 font-bold">Lap 18</span>
+                <div class="bg-gray-950/70 p-2.5 rounded-xl border border-red-900/40">
+                    <span class="text-[10px] text-gray-500 block">SOFT TIRE</span>
+                    <span class="text-rose-400 font-bold">Lap 18 Cliff</span>
+                    <span class="text-[9px] text-gray-500 block font-sans">Fastest speed</span>
                 </div>
-                <div class="bg-gray-950/70 p-2 rounded-xl border border-amber-900/40">
-                    <span class="text-[10px] text-gray-500 block">MED CLIFF</span>
-                    <span class="text-amber-400 font-bold">Lap 28</span>
+                <div class="bg-gray-950/70 p-2.5 rounded-xl border border-amber-900/40">
+                    <span class="text-[10px] text-gray-500 block">MEDIUM TIRE</span>
+                    <span class="text-amber-400 font-bold">Lap 28 Cliff</span>
+                    <span class="text-[9px] text-gray-500 block font-sans">Balanced pace</span>
                 </div>
-                <div class="bg-gray-950/70 p-2 rounded-xl border border-gray-700/40">
-                    <span class="text-[10px] text-gray-500 block">HARD CLIFF</span>
-                    <span class="text-gray-300 font-bold">Lap 42</span>
+                <div class="bg-gray-950/70 p-2.5 rounded-xl border border-gray-700/40">
+                    <span class="text-[10px] text-gray-500 block">HARD TIRE</span>
+                    <span class="text-gray-300 font-bold">Lap 42 Cliff</span>
+                    <span class="text-[9px] text-gray-500 block font-sans">Longest lasting</span>
                 </div>
             </div>
 
             <!-- Plotly Non-Linear Tyre Degradation Curves -->
             <div class="bg-gray-950/60 p-2.5 rounded-xl border border-gray-800 space-y-1">
-                <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider block font-mono">Degradation Curves (Laps 1 to 50):</span>
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider block font-mono">Lap Time Lost to Tire Wear (Laps 1 to 50):</span>
+                </div>
                 <div id="tyre-curves-chart" class="w-full h-56"></div>
             </div>
             <a href="/?tyre=1" class="w-full py-2 bg-rose-950 hover:bg-rose-900 border border-rose-800 text-rose-300 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5 block text-center mt-2">
-                <span>▶ Enable Thermal Cliffs in Studio ➔</span>
+                <span>▶ Turn On Tire Cliffs in Race Studio ➔</span>
             </a>
         </div>
 
@@ -203,22 +223,22 @@
         <div id="card-model-3" class="bg-f1card border border-f1border rounded-2xl p-5 shadow-xl space-y-4 transition-all duration-300">
             <div class="flex items-center justify-between border-b border-f1border pb-2.5">
                 <div>
-                    <span class="text-[10px] font-mono uppercase tracking-wider text-purple-400 font-bold block">Model 3 • NLP Classifier</span>
-                    <h2 class="text-sm font-bold text-white">Local Intent & Slot Model</h2>
+                    <span class="text-[10px] font-mono uppercase tracking-wider text-purple-400 font-bold block">Model 3 • AI Strategy Assistant</span>
+                    <h2 class="text-sm font-bold text-white">Plain-English Strategy Assistant</h2>
                 </div>
                 <span class="text-xs bg-purple-950 text-purple-300 border border-purple-800/80 px-2 py-0.5 rounded font-mono font-semibold">
-                    100% Acc
+                    100% Accuracy
                 </span>
             </div>
 
             <p class="text-xs text-gray-400 leading-relaxed">
-                Trained TF-IDF vectorizer + calibrated logistic classifier mapping free-form strategy prompts into 10 intent classes and extracting driver, lap, and compound slots.
+                Translates everyday English questions and instructions into strategy adjustments. You can talk to it like a real race engineer—ask <em>"what if no safety car?"</em> or tell it <em>"switch Norris to Softs"</em> and it immediately configures the simulation.
             </p>
 
             <!-- Interactive NLP Tester -->
             <div class="space-y-3 bg-gray-950/70 p-3.5 rounded-xl border border-purple-900/40">
                 <span class="text-xs font-bold text-purple-300 uppercase tracking-wider block">
-                    Live NLP Inference Tester
+                    Try Typing a Strategy Command
                 </span>
 
                 <div class="space-y-1.5">
@@ -227,42 +247,42 @@
                         placeholder="Type any custom F1 command..."
                         class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 font-sans">
                     <button type="button" onclick="testNLPInference()" class="w-full py-1.5 bg-purple-900 hover:bg-purple-800 text-purple-200 font-bold rounded-lg text-xs transition">
-                        Run Model Prediction
+                        Check What the AI Understands
                     </button>
                 </div>
 
                 <!-- Prediction Results -->
                 <div id="nlp-result-card" class="space-y-2 border-t border-gray-800 pt-2 text-xs">
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-400">Predicted Intent:</span>
-                        <span id="nlp-pred-intent" class="font-mono font-bold text-purple-300">MODIFY_PIT_LAP</span>
+                        <span class="text-gray-400">Understood Action:</span>
+                        <span id="nlp-pred-intent" class="font-sans font-bold text-purple-300">Change Pit Stop Lap</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-400">Confidence:</span>
-                        <span id="nlp-pred-conf" class="font-mono font-bold text-emerald-400">92.4%</span>
+                        <span class="text-gray-400">AI Confidence:</span>
+                        <span id="nlp-pred-conf" class="font-mono font-bold text-emerald-400">92.4% Certain</span>
                     </div>
                     <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden">
                         <div id="nlp-conf-bar" class="bg-purple-500 h-full transition-all duration-300" style="width: 92%"></div>
                     </div>
 
-                    <!-- Extracted Slots Table -->
+                    <!-- Extracted Details Table -->
                     <div class="bg-gray-900/80 p-2.5 rounded-lg border border-gray-800 space-y-1 font-mono text-[11px]">
-                        <span class="text-[10px] text-gray-500 uppercase block font-sans">Extracted Slots:</span>
+                        <span class="text-[10px] text-gray-500 uppercase block font-sans">Details Extracted From Your Words:</span>
                         <div class="flex justify-between text-gray-300">
-                            <span>Driver:</span>
+                            <span class="font-sans">Target Driver:</span>
                             <span id="slot-driver" class="text-white font-bold">Carlos Sainz (#55)</span>
                         </div>
                         <div class="flex justify-between text-gray-300">
-                            <span>Delta Laps:</span>
-                            <span id="slot-lap" class="text-white font-bold">-1 (earlier)</span>
+                            <span class="font-sans">Pit Stop Timing:</span>
+                            <span id="slot-lap" class="text-white font-bold">Pit 1 lap earlier</span>
                         </div>
                         <div class="flex justify-between text-gray-300">
-                            <span>Compound:</span>
-                            <span id="slot-compound" class="text-amber-400 font-bold">MEDIUM</span>
+                            <span class="font-sans">Tire Choice:</span>
+                            <span id="slot-compound" class="text-amber-400 font-bold">Medium Tires</span>
                         </div>
                     </div>
                     <button type="button" onclick="applyNLPToStudio()" class="w-full py-2 bg-purple-950 hover:bg-purple-900 border border-purple-800 text-purple-200 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5 mt-2">
-                        <span>🚀 Execute Command in Strategy Assistant ➔</span>
+                        <span>🚀 Run This in Race Studio Strategy Assistant ➔</span>
                     </button>
                 </div>
             </div>
@@ -418,17 +438,40 @@
         document.getElementById('calc-prob-result').textContent = pct + '%';
         const bar = document.getElementById('calc-prob-bar');
         bar.style.width = pct + '%';
+        const verdictEl = document.getElementById('calc-prob-verdict');
         if (prob >= 0.6) {
             bar.className = 'bg-emerald-500 h-full transition-all duration-300';
             document.getElementById('calc-prob-result').className = 'text-sm font-bold font-mono text-emerald-400';
+            if (verdictEl) verdictEl.innerHTML = '<span class="text-emerald-400">🟢 <strong>High Chance:</strong> Chasing car has plenty of speed and grip to make the overtake.</span>';
         } else if (prob >= 0.35) {
             bar.className = 'bg-amber-500 h-full transition-all duration-300';
             document.getElementById('calc-prob-result').className = 'text-sm font-bold font-mono text-amber-400';
+            if (verdictEl) verdictEl.innerHTML = '<span class="text-amber-400">🟡 <strong>Wheel-to-Wheel Scrap:</strong> 50/50 contest into the braking zone.</span>';
         } else {
             bar.className = 'bg-rose-500 h-full transition-all duration-300';
             document.getElementById('calc-prob-result').className = 'text-sm font-bold font-mono text-rose-400';
+            if (verdictEl) verdictEl.innerHTML = '<span class="text-rose-400">🔴 <strong>Trapped in Traffic:</strong> Car ahead defends successfully; chaser stuck in dirty air.</span>';
         }
     }
+
+    const intentFriendlyNames = {
+        'MODIFY_PIT_LAP': 'Change Pit Stop Lap',
+        'REMOVE_SAFETY_CAR': 'Remove Full Safety Car',
+        'REMOVE_VSC': 'Remove Virtual Safety Car',
+        'INSERT_SAFETY_CAR': 'Deploy Safety Car',
+        'INSERT_VSC': 'Deploy Virtual Safety Car',
+        'SWITCH_TO_2_STOP': 'Switch Strategy to 2 Pit Stops',
+        'SET_STOP_COUNT': 'Change Number of Pit Stops',
+        'OPTIMIZE_PIT_STOP': 'Optimize Pit Stop Timing',
+        'SWITCH_COMPOUND': 'Change Tire Compound',
+        'QUESTION_VERSTAPPEN_WIN': 'Question: Why Verstappen Won Without SC',
+        'QUESTION_TYRE_DEGRADATION': 'Question: Tire Wear & Cliffs',
+        'TOGGLE_TRAFFIC': 'Turn On Traffic & Dirty Air',
+        'TOGGLE_NONLINEAR_TYRE': 'Turn On Tire Cliff Wear',
+        'SWITCH_DRIVER': 'Select Different Driver',
+        'RESET_BASELINE': 'Reset Race to Actual 2023 Results',
+        'ANALYTICAL_QA': 'Race Strategy Analysis Question'
+    };
 
     async function testNLPInference() {
         const input = document.getElementById('test-nlp-input').value.trim();
@@ -442,18 +485,19 @@
             });
             const data = await res.json();
 
-            document.getElementById('nlp-pred-intent').textContent = data.intent || 'UNKNOWN';
+            const actionTitle = intentFriendlyNames[data.intent] || data.intent || 'Strategy Adjustment';
+            document.getElementById('nlp-pred-intent').textContent = actionTitle;
             const pct = ((data.confidence || 0) * 100).toFixed(1);
-            document.getElementById('nlp-pred-conf').textContent = pct + '%';
+            document.getElementById('nlp-pred-conf').textContent = pct + '% Certain';
             document.getElementById('nlp-conf-bar').style.width = pct + '%';
 
             const slots = data.slots || {};
-            document.getElementById('slot-driver').textContent = slots.driver_name ? `${slots.driver_name} (#${slots.driver_number})` : 'Not specified';
-            let lapText = 'None';
-            if (slots.target_lap) lapText = `Lap ${slots.target_lap}`;
-            else if (slots.delta_laps) lapText = `${slots.delta_laps > 0 ? '+' : ''}${slots.delta_laps} lap(s)`;
+            document.getElementById('slot-driver').textContent = slots.driver_name ? `${slots.driver_name} (#${slots.driver_number})` : 'Current Selected Driver';
+            let lapText = 'Keep current pit lap';
+            if (slots.target_lap) lapText = `Pit on Lap ${slots.target_lap}`;
+            else if (slots.delta_laps) lapText = slots.delta_laps < 0 ? `Pit ${Math.abs(slots.delta_laps)} lap(s) earlier` : `Pit ${slots.delta_laps} lap(s) later`;
             document.getElementById('slot-lap').textContent = lapText;
-            document.getElementById('slot-compound').textContent = slots.compound || 'Unchanged';
+            document.getElementById('slot-compound').textContent = slots.compound ? `${slots.compound} Tires` : 'Keep current tires';
         } catch (e) {
             console.error('NLP test failed:', e);
         }

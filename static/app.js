@@ -394,7 +394,7 @@ function renderStintRows(cliffAnalysis = null) {
         const cliffLimit = cliffThresholds[s.compound] || 30;
         let cliffAnalysisItem = (latestCliffAnalysis && latestCliffAnalysis[idx]) ? latestCliffAnalysis[idx] : null;
 
-        let statusLabel = `🟢 Optimal Wear (${stintLaps}L / Max ${cliffLimit}L)`;
+        let statusLabel = `🟢 Healthy Tires (${stintLaps} laps / Safe to L${cliffLimit})`;
         let badgeClass = 'bg-emerald-950 text-emerald-400 border-emerald-800';
 
         if (cliffAnalysisItem) {
@@ -406,10 +406,10 @@ function renderStintRows(cliffAnalysis = null) {
             }
         } else {
             if (stintLaps > cliffLimit) {
-                statusLabel = `🔴 Exceeded Thermal Cliff (+${((stintLaps - cliffLimit) * 0.08).toFixed(2)}s/lap)`;
+                statusLabel = `🔴 Past Tire Cliff (+${((stintLaps - cliffLimit) * 0.08).toFixed(2)}s/lap lost)`;
                 badgeClass = 'bg-rose-950 text-rose-400 border-rose-800';
             } else if (stintLaps >= cliffLimit - 3) {
-                statusLabel = `🟡 Near Cliff (${cliffLimit - stintLaps} laps left)`;
+                statusLabel = `🟡 Near Cliff (${cliffLimit - stintLaps} laps before grip drop)`;
                 badgeClass = 'bg-amber-950 text-amber-400 border-amber-800';
             }
         }
@@ -420,7 +420,7 @@ function renderStintRows(cliffAnalysis = null) {
             <span class="px-2 py-0.5 rounded border ${badgeClass} text-[10px] font-semibold flex items-center gap-1">
                 <span>${statusLabel}</span>
             </span>
-            <span class="text-gray-400 text-[10px]" title="Model 2: HistGradientBoosting Non-Linear Degradation">M2 Cliff: L${cliffLimit}</span>
+            <span class="text-gray-400 text-[10px]" title="Tire Wear Drop-Off Threshold">Tire Cliff at Lap ${cliffLimit}</span>
         `;
         row.appendChild(cliffDiv);
 
@@ -736,9 +736,9 @@ function renderResults(data) {
     const feed = document.getElementById('traffic-events-feed');
     if (feed) {
         if (!enableTraffic) {
-            feed.innerHTML = '<div class="text-gray-500 italic py-1">Traffic model is disabled. All drivers run at unobstructed flying pace in clean air.</div>';
+            feed.innerHTML = '<div class="text-gray-500 italic py-1">Traffic simulation is disabled. All cars run with open track ahead without getting held up.</div>';
         } else if (!data.traffic_events || data.traffic_events.length === 0) {
-            feed.innerHTML = '<div class="text-gray-400 italic py-1">No proximity battles or dirty air bottlenecks occurred under this scenario.</div>';
+            feed.innerHTML = '<div class="text-gray-400 italic py-1">No close battles or traffic slowdowns occurred under this scenario.</div>';
         } else {
             feed.innerHTML = '';
             data.traffic_events.slice(-10).reverse().forEach(ev => {
@@ -748,11 +748,11 @@ function renderResults(data) {
                     item.innerHTML = `
                         <div class="flex items-center gap-2">
                             <span class="text-amber-400 font-bold">L${ev.lap}</span>
-                            <span class="text-gray-300"><strong>${ev.chaser}</strong> trapped behind <strong>${ev.leader}</strong></span>
+                            <span class="text-gray-300"><strong>${ev.chaser}</strong> held up behind <strong>${ev.leader}</strong></span>
                             <span class="text-[10px] text-gray-500 font-mono">(Gap: ${ev.gap}s)</span>
                         </div>
                         <span class="text-[10px] bg-rose-950/80 text-rose-300 border border-rose-800 px-1.5 py-0.5 rounded font-mono">
-                            Blocked in Dirty Air (P=${(ev.prob * 100).toFixed(0)}%)
+                            Held Up in Traffic (${(ev.prob * 100).toFixed(0)}% pass chance)
                         </span>
                     `;
                 } else {
@@ -763,7 +763,7 @@ function renderResults(data) {
                             <span class="text-[10px] text-gray-500 font-mono">(Gap: ${ev.gap}s)</span>
                         </div>
                         <span class="text-[10px] bg-emerald-950/80 text-emerald-300 border border-emerald-800 px-1.5 py-0.5 rounded font-mono">
-                            Overtake Successful (P=${(ev.prob * 100).toFixed(0)}%)
+                            Pass Completed (${(ev.prob * 100).toFixed(0)}% chance)
                         </span>
                     `;
                 }
